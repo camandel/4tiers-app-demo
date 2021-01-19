@@ -1,0 +1,51 @@
+version: "3.7"
+
+services:
+  reverse-proxy:
+    build: ./reverse-proxy
+    depends_on:
+      - webapp
+    networks:
+      - network-proxy
+    ports:
+      - "8001:80"
+
+  webapp:
+    build: ./webapp
+    environment:
+      - API_URL=http://api:3001/data
+    depends_on:
+      - api
+    networks:
+      - network-proxy
+      - network-frontend
+
+  api:
+    build: ./api
+    environment:
+      - CONNECTION_STRING=postgres://myuser:mypassword@db/mydb
+    depends_on:
+      - db
+    networks:
+      - network-frontend
+      - network-backend
+
+  db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    volumes:
+        - ./sql-scripts/:/docker-entrypoint-initdb.d:ro
+        - pgdata:/var/lib/postgresql/data
+    networks:
+      - network-backend
+
+networks:
+  network-backend:
+  network-frontend:
+  network-proxy:
+
+volumes:
+  pgdata:
