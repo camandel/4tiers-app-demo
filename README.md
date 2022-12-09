@@ -10,7 +10,7 @@ Application demo composed by:
 - add new records in `sql-scripts/init.sql` file (optional)
 - start containers with docker-compose (or, just to learn how it works, follow the [manual steps](manual-steps.md)):
 ```
-docker-compose up -d
+docker compose up -d
 ```
 - open a browser on `http://<your-ip-here>:8001`:
 
